@@ -21,6 +21,17 @@ cameras:
             - detect
       hwaccel_args: preset-intel-qsv-h264
     detect:
-      enabled: False # <---- disable detection until you have a working camera feed
+      enabled: True # <---- disable detection until you have a working camera feed
       width: 1280
       height: 1024
+  driveway:
+    ffmpeg:
+      inputs:
+        - path: rtsp://192.168.178.105:8554/driveway-cam
+          roles:
+            - detect
+      hwaccel_args: preset-intel-qsv-h264
+    detect:
+      enabled: True # <---- disable detection until you have a working camera feed
+      width: 1920
+      height: 1080
