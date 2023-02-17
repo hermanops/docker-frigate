@@ -19,8 +19,9 @@ services:
       FRIGATE_RTSP_PASSWORD: "${RTSP_PASSWORD:-password}"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - .config/config.yml:/config/config.yml
-      - ${STORAGE_PATH:?path must be defined}:/media/frigate
+      - ./config/config.yml:/config/config.yml
+      - ./video/:/media/frigate
+      - database:/db
       - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
         target: /tmp/cache
         tmpfs:
@@ -32,3 +33,6 @@ services:
       TZ: Europe/Amsterdam
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  database: {}
