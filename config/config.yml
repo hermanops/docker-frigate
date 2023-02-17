@@ -12,26 +12,71 @@ ffmpeg:
   hwaccel_args: preset-vaapi
   input_args: -avoid_negative_ts make_zero -fflags +genpts+discardcorrupt -rtsp_transport tcp -timeout 5000000 -use_wallclock_as_timestamps 1
 
+go2rtc:
+  streams:
+    driveway:
+      - rtsp://192.168.178.105:8554/driveway-cam
+    frontdoor:
+      - rtsp://192.168.178.105:8554/front-door-cam
+    garage:
+      - rtsp://192.168.178.105:8554/garage-cam
+  webrtc:
+    candidates:
+      - 192.168.178.87:8555
+      - stun:8555
 cameras:
-  garden:
-    ffmpeg:
-      inputs:
-        - path: rtsp://octocam.home.arpa/h264
-          roles:
-            - detect
-      hwaccel_args: preset-intel-qsv-h264
-    detect:
-      enabled: True # <---- disable detection until you have a working camera feed
-      width: 1280
-      height: 1024
   driveway:
     ffmpeg:
       inputs:
-        - path: rtsp://192.168.178.105:8554/driveway-cam
+        - path: rtsp://127.0.0.1:8554/driveway
+          input_args: preset-rtsp-restream
           roles:
             - detect
+            - record
       hwaccel_args: preset-intel-qsv-h264
     detect:
       enabled: True # <---- disable detection until you have a working camera feed
       width: 1920
       height: 1080
+    record: # <----- Enable recording
+      enabled: True
+    snapshots: # <----- Enable snapshots
+      enabled: True
+    motion:
+      mask:
+        - 1887,1080,1881,1003,1369,1011,1368,1080
+        - 1721,436,1707,511,1185,427,1186,384
+  frontdoor:
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/frontdoor
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+            - record
+      hwaccel_args: preset-intel-qsv-h264
+    detect:
+      enabled: True # <---- disable detection until you have a working camera feed
+      width: 1920
+      height: 1080
+    record: # <----- Enable recording
+      enabled: True
+    snapshots: # <----- Enable snapshots
+      enabled: True
+  garage:
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/garage
+          input_args: preset-rtsp-restream
+          roles:
+            - detect
+            - record
+      hwaccel_args: preset-intel-qsv-h264
+    detect:
+      enabled: True # <---- disable detection until you have a working camera feed
+      width: 1920
+      height: 1080
+    record: # <----- Enable recording
+      enabled: True
+    snapshots: # <----- Enable snapshots
+      enabled: True
