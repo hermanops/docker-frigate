@@ -1,0 +1,49 @@
+database:
+  path: /db/frigate.db
+mqtt:
+  enabled: False
+detectors:
+  coral:
+    type: edgetpu
+    device: usb
+
+ffmpeg:
+  global_args: -hide_banner -loglevel warning
+  hwaccel_args: preset-intel-qsv-h264
+  input_args: -avoid_negative_ts make_zero -fflags +genpts+discardcorrupt -rtsp_transport tcp -timeout 5000000 -use_wallclock_as_timestamps 1
+
+cameras:
+  garden:
+    ffmpeg:
+      inputs:
+        - path: rtsp://octocam.home.arpa/h264
+          roles:
+            - detect
+            - record
+    best_image_timeout: 60
+    detect:
+      enabled: true
+      max_disappeared: 25
+      fps: 5
+      width: 1280
+      height: 1024
+    record:
+      enabled: True
+      retain:
+        days: 1
+        mode: motion
+      events:
+        retain:
+          default: 1
+          mode: active_objects
+    objects:
+      track:
+        - person
+        - bicycle
+        - car
+        - motorcycle
+        - airplane
+        - bus
+        - bird
+        - cat
+        - dog
